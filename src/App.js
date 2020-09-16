@@ -10,21 +10,41 @@ export default class App extends Component {
       treasureBox: Math.floor(Math.random() * 9),
       turns: 9
     }
+
   }
 
   handleLocation = (indexLocation) => {
-    let { squaresArray, turns} = this.state
+    let { squaresArray, turns, treasureBox} = this.state
     if (turns !== 1) {
-      turns -= 1;
-      squaresArray[indexLocation] = '🌴';
-      alert(indexLocation);
+      turns -= 1
+      this.setState({turns: turns})
+      if (indexLocation === treasureBox){
+        squaresArray[treasureBox] = "💰"
+        alert("YOU WIN!")
+      }
+      else {
+        squaresArray[indexLocation] =  "🌴"
+      }
+      this.setState({squaresArray: squaresArray});
+      // this.state.squaresArray[this.state.treasureBox] = "💰"
+      // this.setState({squaresArray: this.state.squaresArray})
     } else {
       alert("Game Over!")
     }
   }
 
+  restartGame = () => {
+    let { squaresArray, turns, treasureBox} = this.state
+    turns = 9
+    this.setState({turns: turns})
+    squaresArray = [...Array(9).fill("Tree")]
+    this.setState({squaresArray: squaresArray})
+    treasureBox = Math.floor(Math.random() * 9)
+    this.setState({treasureBox: treasureBox})
+  }
+
   render(){
-    let { squaresArray } = this.state
+    let { squaresArray, treasureBox } = this.state
     let squares = squaresArray.map((squares, index) => {
       return(
         <Square
@@ -41,6 +61,9 @@ export default class App extends Component {
       <div id="gameboard">
         { squares }
       </div>
+      <h3>Remaining Turns: {this.state.turns}</h3>
+      <br></br>
+      <button onClick= {this.restartGame}> Restart Game</button>
       </>
     )
   }
